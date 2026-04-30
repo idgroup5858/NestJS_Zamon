@@ -4,13 +4,19 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { SubjectModule } from './subject/subject.module';
+import { ClassModule } from './class/class.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
-    }), //for env is global
+      envFilePath: '.env',//for env is global
+    }),
+    SubjectModule,
+    ClassModule,
+    StudentModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

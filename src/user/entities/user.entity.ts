@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Class } from "src/class/entities/class.entity";
+import { Subject } from "src/subject/entities/subject.entity";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 
@@ -28,6 +30,17 @@ export class User {
 
      @CreateDateColumn()
      date: Date;
+
+     //Relations
+
+     @ManyToMany(() => Subject, subject => subject.users)
+     @JoinTable()
+     subjects:Subject[];
+
+
+
+     @OneToMany(()=> Class, classs => classs.users)
+     classs:Class[]
 
 
 

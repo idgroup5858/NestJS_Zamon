@@ -5,6 +5,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
+        ".env": true,
         "src/app.controller.spec.ts": true,
         ".gitignore": true,
         "tsconfig.json": true,
@@ -21,7 +22,15 @@
         "dist": true,
         "src/user/user.controller.spec.ts": true,
         "src/user/user.service.spec.ts": true,
-        ".env": false
+        "src/subject/subject.controller.spec.ts": true,
+        "src/subject/subject.service.spec.ts": true,
+        "src/app.module.ts": true,
+        "src/main.ts": true,
+        "README.md": true,
+        "src/class/class.controller.spec.ts": true,
+        "src/class/class.service.spec.ts": true,
+        "src/student/student.controller.spec.ts": true,
+        "src/student/student.service.spec.ts": true
     },
     "hide-files.files": [
         "src/app.controller.spec.ts",
@@ -39,6 +48,15 @@
         "node_modules",
         "dist",
         "src/user/user.controller.spec.ts",
-        "src/user/user.service.spec.ts"
+        "src/user/user.service.spec.ts",
+        "src/subject/subject.controller.spec.ts",
+        "src/subject/subject.service.spec.ts",
+        "src/app.module.ts",
+        "src/main.ts",
+        "README.md",
+        "src/class/class.controller.spec.ts",
+        "src/class/class.service.spec.ts",
+        "src/student/student.controller.spec.ts",
+        "src/student/student.service.spec.ts"
     ]
 }

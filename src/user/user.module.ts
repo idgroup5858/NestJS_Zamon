@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './entities/jwt.strategy';
+import { SubjectModule } from 'src/subject/subject.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]),
@@ -14,8 +15,10 @@ import { JwtStrategy } from './entities/jwt.strategy';
     useFactory: (config: ConfigService) => ({
       secret: config.get<string>('JWT_ACCESS_SECRET'),
     }), // for genereted token
-  })],
+  }),
+   SubjectModule],
   controllers: [UserController],
   providers: [UserService,JwtStrategy], //JwtStrategy for token authhorization  @UseGuards(AuthGuard("jwt"))
+  exports:[UserService]
 })
 export class UserModule { }

@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { SubjectService } from 'src/subject/subject.service';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly subjectService: SubjectService
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -88,63 +90,93 @@ export class UserService {
   }
 
   async findAll() {
-    return this.userRepository.find();
-  }
-
-  
-async findAllPagSearch(page: number, limit: number, search?: string) {
-  page = page > 0 ? page : 1;
-  limit = limit > 0 ? limit : 10;
-
-  const skip = (page - 1) * limit;
-
-  const query = this.userRepository.createQueryBuilder('user')
-  // .leftJoinAndSelect('sale.items', 'items')
-  // .leftJoinAndSelect('sale.payments', 'payments')
-  // .leftJoinAndSelect('sale.user', 'user')
-  // .leftJoinAndSelect('items.warehouse', 'warehouse')
-  // .leftJoinAndSelect('items.product', 'product')
-  // .leftJoinAndSelect('sale.customer', 'customer');
-
-  // 
-  if (search) {
-    query.where(
-      'user.first_name LIKE :search OR user.last_name LIKE :search',
-      { search: `%${search}%`}
-    );
-  }
-
-  const [data, total] = await query
-    .orderBy('user.id', 'DESC')
-    .skip(skip)
-    .take(limit)
-    .getManyAndCount();
-
-  return {
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-    data,
-  };
-}
-
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.userRepository.find({
+      relations:["subjects","classs"]
+    });
   }
 
 
+  async findAllPagSearch(page: number, limit: number, search?: string) {
+    page = page > 0 ? page : 1;
+    limit = limit > 0 ? limit : 10;
+
+    const skip = (page - 1) * limit;
+
+    const query = this.userRepository.createQueryBuilder('user')
+    .leftJoinAndSelect('user.subjects', 'subjects')
+    .leftJoinAndSelect('user.classs', 'classs')
+    // .leftJoinAndSelect('sale.items', 'items')
+    // .leftJoinAndSelect('sale.payments', 'payments')
+    // .leftJoinAndSelect('sale.user', 'user')
+    // .leftJoinAndSelect('items.warehouse', 'warehouse')
+    // .leftJoinAndSelect('items.product', 'product')
+    // .leftJoinAndSelect('sale.customer', 'customer');
+
+
+    if (search) {
+      query.where(
+        'user.first_name LIKE :search OR user.last_name LIKE :search',
+        { search: `%${search}%` }
+      );
+    }
+
+    const [data, total] = await query
+      .orderBy('user.id', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      data,
+    };
+  }
+
+
+  async findOne(id: number) {
+    const checkUser = await this.userRepository.findOne(
+      {
+        where: { id: id },
+        relations:["subjects","classs"]   
+      });
+    if (!checkUser) throw new NotFoundException("User not found");
+
+    return checkUser;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const checkUser = await this.userRepository.findOneBy({ id });
+    if (!checkUser) throw new NotFoundException("User not found");
+
+    let hashedPassword = checkUser.password;
+    if (updateUserDto.password) {
+      hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    const user = await this.userRepository.preload({
+      id,
+      ...updateUserDto,
+      password: hashedPassword
+    });
+
+    if (!user) throw new NotFoundException()
+
+    await this.userRepository.save(user)
+
+    return user;
+  }
+
+  async remove(id: number) {
+    const checkUser = await this.userRepository.findOneBy({ id });
+    if (!checkUser) throw new NotFoundException("User not found");
+    await this.userRepository.remove(checkUser);
+    return { message: "User deleted" };
+  }
 
   verifyToken(token: string) {
     try {
@@ -182,8 +214,8 @@ async findAllPagSearch(page: number, limit: number, search?: string) {
       if (new Date(Number(Number(refreshTokenVerify.exp) * 1000)) < new Date()) {
         console.log(true);
       }
-      
-      if(refreshTokenVerify.tokenType!=="refresh"){
+
+      if (refreshTokenVerify.tokenType !== "refresh") {
         throw new UnauthorizedException(); //return {message:"Only refresh token required"}
       }
 
@@ -218,6 +250,49 @@ async findAllPagSearch(page: number, limit: number, search?: string) {
   }
 
 
+  async addSubject(userId: number, subjectId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['subjects'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const subject = await this.subjectService.findOne(subjectId)
+
+    const exists = user.subjects.some(s => s.id === subjectId);
+    
+
+    if (!exists) {
+      user.subjects.push(subject);
+      await this.userRepository.save(user);
+    }else{
+      
+    }
+
+    return user;
+  }
+
+  async removeSubject(userId: number, subjectId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['subjects'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const subject = await this.subjectService.findOne(subjectId)
+
+    user.subjects = user.subjects.filter(
+      (subject) => subject.id !== subjectId,
+    );
+
+    return this.userRepository.save(user);
+  }
+
+
 
 
 
@@ -238,6 +313,38 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
+
+
+/*
+
+
+async addSubjects(userId: number, dto: AddSubjectsDto) {
+  const user = await this.userRepository.findOne({
+    where: { id: userId },
+    relations: ['subjects'],
+  });
+
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  const subjects = await this.subjectRepository.findBy({
+    id: In(dto.subject_ids),
+  });
+
+  // eski + yangi merge
+  const merged = [...user.subjects, ...subjects];
+
+  // duplicate yo‘qotish
+  const map = new Map();
+  merged.forEach(s => map.set(s.id, s));
+
+  user.subjects = Array.from(map.values());
+
+  return this.userRepository.save(user);
+}
+
+*/
 
 
 

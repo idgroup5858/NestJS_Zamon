@@ -61,4 +61,27 @@ export class UserController {
   refreshToken(@Body("refreshToken") refreshToken:string){
     return this.userService.refreshToken(refreshToken)
   }
+
+
+
+  //relations
+
+  @Post('addsubject/:userId/:subjectId')
+  addSubject(
+    @Param('userId') userIdxyz: string,
+    @Param('subjectId') subjectId: string
+  ) {
+    return this.userService.addSubject(+userIdxyz,+subjectId);
+  }
+
+  @Post('removesubject/:userId/:subjectId')
+  removeSubject(
+    @Param('userId') userId: string,
+    @Param('subjectId') subjectId: string
+  ) {
+    return this.userService.removeSubject(+userId,+subjectId);
+  }
+
+
+
 }
