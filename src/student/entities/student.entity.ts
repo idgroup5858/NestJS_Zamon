@@ -1,6 +1,40 @@
+import { Class } from "src/class/entities/class.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
+@Entity()
 export class Student {
 
-    
+
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    first_name: string;
+
+    @Column()
+    last_name: string;
+
+    @Column()
+    father_name: string;
+
+    @Column({ nullable: true })
+    parent_phone: string;
+
+    @Column({ nullable: true })
+    telegram_chat_id: string;
+
+    @CreateDateColumn()
+    date: Date;
+
+    @ManyToOne(() => Class , classs => classs.students,{nullable:true})
+    classs:Class|null;
+
+
+
+
+
+
+
 }

@@ -17,6 +17,6 @@ export class Subject {
     //relations
 
     @ManyToMany(()=> User, user => user.subjects)
-    users:User[];
+    users:User;
 
 }

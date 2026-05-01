@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,6 +33,7 @@ export class ClassService {
 
     const query = this.classRepository.createQueryBuilder('class')
     .leftJoinAndSelect('class.users', 'users')
+    .leftJoinAndSelect('class.students', 'students')
 
     if (search) {
       query.where(
@@ -60,15 +61,18 @@ export class ClassService {
 
   findAll() {
     return this.classRepository.find({
-      relations:["users"]
+      relations:["users","students"]
     });
   }
 
   async findOne(id: number) {
+    if (!id) {
+    throw new BadRequestException('classs id is required');
+  }
     const checkClass = await this.classRepository.findOne(
       {
         where: { id: id },
-        relations:["users"]    
+        relations:["users","students"]    
       });
     if (!checkClass) throw new NotFoundException("Not found");
     return checkClass;
