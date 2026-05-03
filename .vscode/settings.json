@@ -5,7 +5,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".env": true,
+        ".env": false,
         "src/app.controller.spec.ts": true,
         ".gitignore": true,
         "tsconfig.json": true,
