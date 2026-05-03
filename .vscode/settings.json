@@ -5,7 +5,8 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".env": false,
+        ".env": true,
+        "src/main.ts": true,
         "src/app.controller.spec.ts": true,
         ".gitignore": true,
         "tsconfig.json": true,
@@ -13,7 +14,6 @@
         "package.json": true,
         "package-lock.json": true,
         "nest-cli.json": true,
-        "eslint.config.mjs": true,
         ".prettierrc": true,
         "test": true,
         "src/app.controller.ts": true,
@@ -25,12 +25,11 @@
         "src/subject/subject.controller.spec.ts": true,
         "src/subject/subject.service.spec.ts": true,
         "src/app.module.ts": true,
-        "src/main.ts": false,
-        "README.md": false,
         "src/class/class.controller.spec.ts": true,
         "src/class/class.service.spec.ts": true,
         "src/student/student.controller.spec.ts": true,
-        "src/student/student.service.spec.ts": true
+        "src/student/student.service.spec.ts": true,
+        "eslint.config.mjs": true
     },
     "hide-files.files": [
         "src/app.controller.spec.ts",
@@ -40,7 +39,6 @@
         "package.json",
         "package-lock.json",
         "nest-cli.json",
-        "eslint.config.mjs",
         ".prettierrc",
         "test",
         "src/app.controller.ts",
@@ -52,10 +50,10 @@
         "src/subject/subject.controller.spec.ts",
         "src/subject/subject.service.spec.ts",
         "src/app.module.ts",
-        "README.md",
         "src/class/class.controller.spec.ts",
         "src/class/class.service.spec.ts",
         "src/student/student.controller.spec.ts",
-        "src/student/student.service.spec.ts"
+        "src/student/student.service.spec.ts",
+        "eslint.config.mjs"
     ]
 }

@@ -12,3 +12,5 @@
 
                 npm install @nestjs/passport passport passport-jwt @nestjs/jwt
                 npm install -D @types/passport-jwt
+
+                from mac
