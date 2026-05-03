@@ -14,3 +14,13 @@
                 npm install -D @types/passport-jwt
 
                 from mac
+                STUDENT (1) ──────── (N) BASIC_GRADE
+                TEACHER (1) ──────── (N) BASIC_GRADE
+                SUBJECT (1) ──────── (N) BASIC_GRADE
+
+                | Entity     | Relation               |
+                | ---------- | ---------------------- |
+                | Student    | OneToMany → BasicGrade |
+                | Teacher    | OneToMany → BasicGrade |
+                | Subject    | OneToMany → BasicGrade |
+                | BasicGrade | ManyToOne → hammasiga  |

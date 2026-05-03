@@ -11,5 +11,6 @@ import { ClassModule } from 'src/class/class.module';
   ],
   controllers: [StudentController],
   providers: [StudentService],
+  exports:[StudentService]
 })
 export class StudentModule { }

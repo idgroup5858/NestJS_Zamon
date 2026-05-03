@@ -1,3 +1,4 @@
+import { BasicGrade } from "src/basic_grade/entities/basic_grade.entity";
 import { Class } from "src/class/entities/class.entity";
 import { Subject } from "src/subject/entities/subject.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -41,6 +42,13 @@ export class User {
 
      @OneToMany(()=> Class, classs => classs.users)
      classs:Class[]
+
+
+     @OneToMany(()=> BasicGrade, basicGrade => basicGrade.user)
+     basicGrades:BasicGrade[]
+
+
+
 
 
 

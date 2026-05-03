@@ -1,22 +1,26 @@
+import { BasicGrade } from "src/basic_grade/entities/basic_grade.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
 export class Subject {
 
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
     @Column()
-    name:string;
+    name: string;
 
     @CreateDateColumn()
-    date:Date;
+    date: Date;
 
 
     //relations
 
-    @ManyToMany(()=> User, user => user.subjects)
-    users:User;
+    @ManyToMany(() => User, user => user.subjects)
+    users: User;
+
+    @OneToMany(() => BasicGrade, basicGrade => basicGrade.subject)
+    basicGrades: BasicGrade[]
 
 }

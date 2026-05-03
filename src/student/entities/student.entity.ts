@@ -1,5 +1,6 @@
+import { BasicGrade } from "src/basic_grade/entities/basic_grade.entity";
 import { Class } from "src/class/entities/class.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -28,9 +29,13 @@ export class Student {
     @CreateDateColumn()
     date: Date;
 
-    @ManyToOne(() => Class , classs => classs.students,{nullable:true})
-    classs:Class|null;
+    @ManyToOne(() => Class, classs => classs.students, { nullable: true })
+    classs: Class | null;
 
+
+
+    @OneToMany(() => BasicGrade, basicGrade => basicGrade.student)
+    basicGrades: BasicGrade[]
 
 
 

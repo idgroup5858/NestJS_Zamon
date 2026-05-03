@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SubjectModule } from './subject/subject.module';
 import { ClassModule } from './class/class.module';
 import { StudentModule } from './student/student.module';
+import { BasicGradeModule } from './basic_grade/basic_grade.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -16,7 +17,8 @@ import { StudentModule } from './student/student.module';
     }),
     SubjectModule,
     ClassModule,
-    StudentModule, 
+    StudentModule,
+    BasicGradeModule, 
   ],
   controllers: [AppController],
   providers: [AppService],
