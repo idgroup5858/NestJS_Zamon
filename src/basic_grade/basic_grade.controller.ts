@@ -64,7 +64,7 @@ export class BasicGradeController {
     return this.basicGradeService.update(+id, updateBasicGradeDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.basicGradeService.remove(+id);
   }

@@ -1,4 +1,5 @@
 import { BasicGrade } from "src/basic_grade/entities/basic_grade.entity";
+import { BehaviorGrade } from "src/behavior_grade/entities/behavior_grade.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -21,6 +22,10 @@ export class Subject {
     users: User;
 
     @OneToMany(() => BasicGrade, basicGrade => basicGrade.subject)
-    basicGrades: BasicGrade[]
+    basicGrades: BasicGrade[];
+
+
+    @OneToMany(() => BehaviorGrade, (bg) => bg.subject)
+    behaviorGrades: BehaviorGrade[];
 
 }

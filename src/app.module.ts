@@ -8,6 +8,7 @@ import { SubjectModule } from './subject/subject.module';
 import { ClassModule } from './class/class.module';
 import { StudentModule } from './student/student.module';
 import { BasicGradeModule } from './basic_grade/basic_grade.module';
+import { BehaviorGradeModule } from './behavior_grade/behavior_grade.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -18,7 +19,8 @@ import { BasicGradeModule } from './basic_grade/basic_grade.module';
     SubjectModule,
     ClassModule,
     StudentModule,
-    BasicGradeModule, 
+    BasicGradeModule,
+    BehaviorGradeModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

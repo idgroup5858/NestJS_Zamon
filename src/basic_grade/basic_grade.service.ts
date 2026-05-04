@@ -179,7 +179,10 @@ export class BasicGradeService {
     return `This action updates a #${id} basicGrade`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} basicGrade`;
+  async remove(id: number) {
+    const checkBg = await this.basicGradeRepository.findOneBy({ id });
+    if (!checkBg) throw new NotFoundException("Not found");
+    await this.basicGradeRepository.remove(checkBg)
+    return { message: "Delted successfully" };
   }
 }

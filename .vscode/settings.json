@@ -30,7 +30,9 @@
         "src/student/student.service.spec.ts": true,
         "eslint.config.mjs": true,
         "src/basic_grade/basic_grade.controller.spec.ts": true,
-        "src/basic_grade/basic_grade.service.spec.ts": true
+        "src/basic_grade/basic_grade.service.spec.ts": true,
+        "src/behavior_grade/behavior_grade.controller.spec.ts": true,
+        "src/behavior_grade/behavior_grade.service.spec.ts": true
     },
     "hide-files.files": [
         "src/app.controller.spec.ts",
@@ -56,6 +58,8 @@
         "src/student/student.service.spec.ts",
         "eslint.config.mjs",
         "src/basic_grade/basic_grade.controller.spec.ts",
-        "src/basic_grade/basic_grade.service.spec.ts"
+        "src/basic_grade/basic_grade.service.spec.ts",
+        "src/behavior_grade/behavior_grade.controller.spec.ts",
+        "src/behavior_grade/behavior_grade.service.spec.ts"
     ]
 }
