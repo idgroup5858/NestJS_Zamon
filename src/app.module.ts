@@ -14,7 +14,7 @@ import { BehaviorGradeModule } from './behavior_grade/behavior_grade.module';
   imports: [UserModule, DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',//for env is global
+      envFilePath: '.env',//for env is global coment added
     }),
     SubjectModule,
     ClassModule,

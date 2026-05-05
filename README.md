@@ -1,5 +1,5 @@
 
-
+                new from ubuntu added
 
                 npm install @nestjs/typeorm typeorm mysql2
                 npm install class-validator class-transformer
