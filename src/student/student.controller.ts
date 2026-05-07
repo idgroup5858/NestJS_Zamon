@@ -31,6 +31,14 @@ export class StudentController {
     return this.studentService.findOne(+id);
   }
 
+
+  @Get('getbyphone')
+  findOneByPhone(
+    @Query("phone") phone: string,
+  ) {
+    return this.studentService.findByPhone(phone);
+  }
+
   @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
     return this.studentService.update(+id, updateStudentDto);

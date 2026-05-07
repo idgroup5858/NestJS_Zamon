@@ -117,4 +117,13 @@ export class StudentService {
 
     return this.findOne(id);
   }
+
+
+  async findByPhone(phone: string) {
+    return await this.studentRepository.findOne({
+        where: {
+            parent_phone: phone
+        }
+    });
+}
 }

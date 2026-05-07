@@ -36,7 +36,7 @@ export class Student {
 
 
     @OneToMany(() => BasicGrade, basicGrade => basicGrade.student)
-    basicGrades: BasicGrade[]
+    basicGrades: BasicGrade[];
 
 
     @OneToMany(() => BehaviorGrade, (bg) => bg.student)

@@ -9,18 +9,25 @@ import { ClassModule } from './class/class.module';
 import { StudentModule } from './student/student.module';
 import { BasicGradeModule } from './basic_grade/basic_grade.module';
 import { BehaviorGradeModule } from './behavior_grade/behavior_grade.module';
+import { TelegramModule } from './telegram/telegram.module';
+import { TelegrafModule } from 'nestjs-telegraf';
 
 @Module({
   imports: [UserModule, DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',//for env is global coment added
+      envFilePath: '.env',//for env is global coment added new comment new comment
     }),
     SubjectModule,
     ClassModule,
     StudentModule,
     BasicGradeModule,
-    BehaviorGradeModule, 
+    BehaviorGradeModule,
+    
+    TelegrafModule.forRoot({
+      token: process.env.BOT_TOKEN!,
+    }),
+    TelegramModule
   ],
   controllers: [AppController],
   providers: [AppService],
