@@ -99,7 +99,8 @@ export class TelegramUpdate {
         const contact = (ctx.message as any).contact;
 
 
-        const phone = contact.phone_number.replace('+', '');
+        //const phone = contact.phone_number.replace('+', '');
+        const phone = contact.phone_number
 
         // Telegram user chat id
         const telegram_chat_id = ctx.from?.id + "";

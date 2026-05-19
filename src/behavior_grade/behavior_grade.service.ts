@@ -72,7 +72,7 @@ export class BehaviorGradeService {
 
     await this.sendMessage(
       student.telegram_chat_id,
-      `Salom ${student.first_name}! Sizning ${subject.name} fanidan xulq-atvor baholaringiz qo'shildi. Umumiy izoh: ${overall_comment}`
+      `Salom ${student.first_name} ! Sizning ${subject.name} fanidan xulq-atvor baholaringiz qo'shildi. Umumiy izoh: ${overall_comment}`
     );
 
     // 5. return result
