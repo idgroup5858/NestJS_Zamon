@@ -8,8 +8,7 @@ export class Criterion {
     id: number;
     @Column()
     name: string;
-    @Column()
-    comment: string;
+    
 
     @ManyToOne(() => Subject, subject => subject.criteria)
     subject: Subject;
