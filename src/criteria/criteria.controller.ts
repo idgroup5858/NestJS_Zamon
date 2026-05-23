@@ -12,22 +12,22 @@ export class CriteriaController {
     return this.criteriaService.create(createCriterionDto);
   }
 
-  @Get()
+  @Get("getall")
   findAll() {
     return this.criteriaService.findAll();
   }
 
-  @Get(':id')
+  @Get('getby/:id')
   findOne(@Param('id') id: string) {
     return this.criteriaService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateCriterionDto: UpdateCriterionDto) {
     return this.criteriaService.update(+id, updateCriterionDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.criteriaService.remove(+id);
   }

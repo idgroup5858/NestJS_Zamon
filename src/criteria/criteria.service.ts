@@ -30,18 +30,38 @@ export class CriteriaService {
 
   async findAll() {
 
-    return `This action returns all criteria`;
+    return this.criterionRepository.find({
+      relations:["subject"]
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} criterion`;
-  }
-
-  update(id: number, updateCriterionDto: UpdateCriterionDto) {
-    return `This action updates a #${id} criterion`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} criterion`;
-  }
+  async findOne(id: number) {
+      const checkCriteria = await this.criterionRepository.findOne(
+        {
+          where: { id: id },
+          //relations:["sale","purchase","returns"]    
+        });
+      if (!checkCriteria) throw new NotFoundException("Not found");
+      return checkCriteria;
+    }
+  
+    async update(id: number, updateCriterionDto: UpdateCriterionDto) {
+      const checkCriteria = await this.criterionRepository.findOneBy({ id });
+      if (!checkCriteria) throw new NotFoundException("Not found");
+      const criteria = await this.criterionRepository.preload({
+        id,
+        ...updateCriterionDto
+      });
+  
+      if (!criteria) throw new NotFoundException()
+      await this.criterionRepository.save(criteria)
+      return criteria;
+    }
+  
+    async remove(id: number) {
+      const checkCriteria = await this.criterionRepository.findOneBy({ id });
+      if (!checkCriteria) throw new NotFoundException("Not found");
+      await this.criterionRepository.remove(checkCriteria)
+      return { message: "Delted successfully" };
+    }
 }

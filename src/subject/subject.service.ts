@@ -31,6 +31,7 @@ export class SubjectService {
 
     const query = this.subjectRepository.createQueryBuilder('subject')
     .leftJoinAndSelect('subject.users', 'users')
+    .leftJoinAndSelect('subject.criteria', 'criteria')
 
     if (search) {
       query.where(
@@ -58,7 +59,7 @@ export class SubjectService {
 
   findAll() {
     return this.subjectRepository.find({
-      relations:["users"]
+      relations:["users","criteria"]
     });
   }
 

@@ -12,6 +12,11 @@ export class BasicGradeController {
     return this.basicGradeService.create(createBasicGradeDto);
   }
 
+  @Post("add2")
+  create2(@Body() createBasicGradeDto: CreateBasicGradeDto) {
+    return this.basicGradeService.create2(createBasicGradeDto);
+  }
+
   @Get("getall")
   findAll() {
     return this.basicGradeService.findAll();

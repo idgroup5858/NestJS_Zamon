@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBasicGradeDto } from './dto/create-basic_grade.dto';
 import { UpdateBasicGradeDto } from './dto/update-basic_grade.dto';
 import { Between, Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { BasicGrade } from './entities/basic_grade.entity';
 import { UserService } from 'src/user/user.service';
 import { StudentService } from 'src/student/student.service';
 import { SubjectService } from 'src/subject/subject.service';
+import { BasicGradeItem } from './entities/basic_grade_item.entity';
 
 @Injectable()
 export class BasicGradeService {
@@ -14,6 +15,9 @@ export class BasicGradeService {
   constructor(
     @InjectRepository(BasicGrade)
     private readonly basicGradeRepository:Repository<BasicGrade>,
+
+    @InjectRepository(BasicGradeItem)
+    private readonly basicGradeItemRepository:Repository<BasicGradeItem>,
     private readonly userService:UserService,
     private readonly studentService:StudentService,
     private readonly subjectService:SubjectService,
@@ -35,13 +39,73 @@ export class BasicGradeService {
     student: student,
     user: user,
     subject: subject,
-
+    theme:dto.theme,
     grade: dto.grade,
     comment: dto.comment,
   });
 
   return this.basicGradeRepository.save(grade);
   }
+
+  async create2(dto: CreateBasicGradeDto) {
+  const {
+    student_id,
+    user_id,
+    subject_id,
+    theme,
+    grade,
+    comment,
+    items,
+  } = dto;
+
+  // 1. validation
+  if (!items || items.length === 0) {
+    throw new BadRequestException('Items required');
+  }
+
+  // 2. check relations
+  const student = await this.studentService.findOne(student_id);
+  if (!student) throw new NotFoundException('Student not found');
+
+  const user = await this.userService.findOne(user_id);
+  if (!user) throw new NotFoundException('Teacher not found');
+
+  const subject = await this.subjectService.findOne(subject_id);
+  if (!subject) throw new NotFoundException('Subject not found');
+
+  // 3. CREATE BasicGrade (parent)
+  const basicGrade = this.basicGradeRepository.create({
+    student,
+    user,
+    subject,
+    theme,
+    grade,
+    comment,
+  });
+
+  const savedGrade = await this.basicGradeRepository.save(basicGrade);
+
+  // 4. CREATE items
+  const gradeItems = items.map(item =>
+    this.basicGradeItemRepository.create({
+      basicGrade: savedGrade,
+      criterion: { id: item.criterion.id },
+      grade: item.grade,
+      comment: item.comment,
+    }),
+  );
+
+  await this.basicGradeItemRepository.save(gradeItems);
+
+ 
+
+  // 6. return result
+  return {
+    ...savedGrade,
+    items: gradeItems,
+ 
+  };
+}
 
   async findAllPagSearch(page: number, limit: number, search?: string) {
     page = page > 0 ? page : 1;
@@ -151,7 +215,7 @@ export class BasicGradeService {
 
   async findAll() {
     return this.basicGradeRepository.find({
-      relations:["user","student","subject"]
+      relations:["user","student","subject","items"]
     })
   }
 
