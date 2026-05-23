@@ -11,6 +11,7 @@ import { BasicGradeModule } from './basic_grade/basic_grade.module';
 import { BehaviorGradeModule } from './behavior_grade/behavior_grade.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { CriteriaModule } from './criteria/criteria.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -27,7 +28,8 @@ import { TelegrafModule } from 'nestjs-telegraf';
     TelegrafModule.forRoot({
       token: process.env.BOT_TOKEN!,
     }),
-    TelegramModule
+    TelegramModule,
+    CriteriaModule
   ],
   controllers: [AppController],
   providers: [AppService],

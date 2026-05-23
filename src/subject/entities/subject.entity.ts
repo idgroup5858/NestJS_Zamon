@@ -1,5 +1,6 @@
 import { BasicGrade } from "src/basic_grade/entities/basic_grade.entity";
 import { BehaviorGrade } from "src/behavior_grade/entities/behavior_grade.entity";
+import { Criterion } from "src/criteria/entities/criterion.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -27,5 +28,9 @@ export class Subject {
 
     @OneToMany(() => BehaviorGrade, (bg) => bg.subject)
     behaviorGrades: BehaviorGrade[];
+
+
+    @OneToMany(()=> Criterion, criterion => criterion.subject)
+    criteria:Criterion[]
 
 }

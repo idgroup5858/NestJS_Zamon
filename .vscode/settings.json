@@ -5,7 +5,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".env": false,
+        ".env": true,
         "src/main.ts": true,
         "src/app.controller.spec.ts": true,
         "tsconfig.json": true,
@@ -17,7 +17,14 @@
         ".prettierrc": true,
         ".gitignore": true,
         "test": true,
-        "src/telegram/telegram.update/telegram.update.spec.ts": true
+        "src/telegram/telegram.update/telegram.update.spec.ts": true,
+        "pr.js": true,
+        "src/behavior_grade/behavior_grade.service.spec.ts": true,
+        "src/behavior_grade/behavior_grade.controller.spec.ts": true,
+        "src/subject/subject.service.spec.ts": true,
+        "src/subject/subject.controller.spec.ts": true,
+        "src/criteria/criteria.service.spec.ts": true,
+        "src/criteria/criteria.controller.spec.ts": true
     },
     "hide-files.files": [
         "src/app.controller.spec.ts",
@@ -30,6 +37,13 @@
         ".prettierrc",
         ".gitignore",
         "test",
-        "src/telegram/telegram.update/telegram.update.spec.ts"
+        "src/telegram/telegram.update/telegram.update.spec.ts",
+        "pr.js",
+        "src/behavior_grade/behavior_grade.service.spec.ts",
+        "src/behavior_grade/behavior_grade.controller.spec.ts",
+        "src/subject/subject.service.spec.ts",
+        "src/subject/subject.controller.spec.ts",
+        "src/criteria/criteria.service.spec.ts",
+        "src/criteria/criteria.controller.spec.ts"
     ]
 }
