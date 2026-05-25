@@ -7,14 +7,14 @@ import { UpdateBasicGradeDto } from './dto/update-basic_grade.dto';
 export class BasicGradeController {
   constructor(private readonly basicGradeService: BasicGradeService) { }
 
-  @Post("add")
+  @Post("addold")
   create(@Body() createBasicGradeDto: CreateBasicGradeDto) {
-    return this.basicGradeService.create(createBasicGradeDto);
+    return this.basicGradeService.createOld(createBasicGradeDto);
   }
 
-  @Post("add2")
+  @Post("add")
   create2(@Body() createBasicGradeDto: CreateBasicGradeDto) {
-    return this.basicGradeService.create2(createBasicGradeDto);
+    return this.basicGradeService.create(createBasicGradeDto);
   }
 
   @Get("getall")

@@ -7,7 +7,7 @@ export class CreateBasicGradeDto {
     student_id:number;
     subject_id:number;
     theme:string;
-    items:BasicGradeItem[];
+    items:CreateBasicGradeItemDto[];
     grade:number;
     comment:string;
 

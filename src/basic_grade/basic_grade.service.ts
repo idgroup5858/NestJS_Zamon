@@ -14,99 +14,107 @@ export class BasicGradeService {
 
   constructor(
     @InjectRepository(BasicGrade)
-    private readonly basicGradeRepository:Repository<BasicGrade>,
+    private readonly basicGradeRepository: Repository<BasicGrade>,
 
     @InjectRepository(BasicGradeItem)
-    private readonly basicGradeItemRepository:Repository<BasicGradeItem>,
-    private readonly userService:UserService,
-    private readonly studentService:StudentService,
-    private readonly subjectService:SubjectService,
-  ){}
+    private readonly basicGradeItemRepository: Repository<BasicGradeItem>,
+    private readonly userService: UserService,
+    private readonly studentService: StudentService,
+    private readonly subjectService: SubjectService,
+  ) { }
+
+  async createOld(dto: CreateBasicGradeDto) {
+    const student = await this.studentService.findOne(dto.student_id);
+    if (!student) throw new NotFoundException("Student not found");
+
+    const user = await this.userService.findOne(dto.user_id);
+    if (!user) throw new NotFoundException("Teacher not found");
+
+    const subject = await this.subjectService.findOne(dto.subject_id);
+    if (!subject) throw new NotFoundException("Subject not found");
+
+    const grade = this.basicGradeRepository.create({
+
+
+      student: student,
+      user: user,
+      subject: subject,
+      theme: dto.theme,
+      grade: dto.grade,
+      comment: dto.comment,
+    });
+
+    return this.basicGradeRepository.save(grade);
+  }
 
   async create(dto: CreateBasicGradeDto) {
-     const student = await this.studentService.findOne(dto.student_id);
-  if (!student) throw new NotFoundException("Student not found");
+    const {
+      student_id,
+      user_id,
+      subject_id,
+      theme,
+      grade,
+      comment,
+      items,
+    } = dto;
 
-  const user = await this.userService.findOne(dto.user_id);
-  if (!user) throw new NotFoundException("Teacher not found");
+    // 1. validation
+    if (!items || items.length === 0) {
+      throw new BadRequestException('Items required');
+    }
 
-  const subject = await this.subjectService.findOne(dto.subject_id);
-  if (!subject) throw new NotFoundException("Subject not found");
+    // 2. check relations
+    const student = await this.studentService.findOne(student_id);
+    if (!student) throw new NotFoundException('Student not found');
 
-  const grade = this.basicGradeRepository.create({
-    
+    const user = await this.userService.findOne(user_id);
+    if (!user) throw new NotFoundException('Teacher not found');
 
-    student: student,
-    user: user,
-    subject: subject,
-    theme:dto.theme,
-    grade: dto.grade,
-    comment: dto.comment,
-  });
+    const subject = await this.subjectService.findOne(subject_id);
+    if (!subject) throw new NotFoundException('Subject not found');
 
-  return this.basicGradeRepository.save(grade);
+    // 3. CREATE BasicGrade (parent)
+    const basicGrade = this.basicGradeRepository.create({
+      student,
+      user,
+      subject,
+      theme,
+      grade,
+      comment,
+    });
+
+    const savedGrade = await this.basicGradeRepository.save(basicGrade);
+
+    // 4. CREATE items
+    const gradeItems = items.map(item =>
+      this.basicGradeItemRepository.create({
+        basicGrade: savedGrade,
+
+        criterion: {
+          id: item.criterion_id,
+        },
+
+        grade: item.grade,
+        comment: item.comment,
+      }),
+    );
+
+    await this.basicGradeItemRepository.save(gradeItems);
+
+
+
+    // 6. return result
+    return {
+      ...savedGrade,
+      items: gradeItems,
+
+    };
   }
-
-  async create2(dto: CreateBasicGradeDto) {
-  const {
-    student_id,
-    user_id,
-    subject_id,
-    theme,
-    grade,
-    comment,
-    items,
-  } = dto;
-
-  // 1. validation
-  if (!items || items.length === 0) {
-    throw new BadRequestException('Items required');
+  async findAll() {
+    return this.basicGradeRepository.find({
+      relations: ["user", "student", "subject", "items", "items.criterion"]
+    })
   }
-
-  // 2. check relations
-  const student = await this.studentService.findOne(student_id);
-  if (!student) throw new NotFoundException('Student not found');
-
-  const user = await this.userService.findOne(user_id);
-  if (!user) throw new NotFoundException('Teacher not found');
-
-  const subject = await this.subjectService.findOne(subject_id);
-  if (!subject) throw new NotFoundException('Subject not found');
-
-  // 3. CREATE BasicGrade (parent)
-  const basicGrade = this.basicGradeRepository.create({
-    student,
-    user,
-    subject,
-    theme,
-    grade,
-    comment,
-  });
-
-  const savedGrade = await this.basicGradeRepository.save(basicGrade);
-
-  // 4. CREATE items
-  const gradeItems = items.map(item =>
-    this.basicGradeItemRepository.create({
-      basicGrade: savedGrade,
-      criterion: { id: item.criterion.id },
-      grade: item.grade,
-      comment: item.comment,
-    }),
-  );
-
-  await this.basicGradeItemRepository.save(gradeItems);
-
- 
-
-  // 6. return result
-  return {
-    ...savedGrade,
-    items: gradeItems,
- 
-  };
-}
-
   async findAllPagSearch(page: number, limit: number, search?: string) {
     page = page > 0 ? page : 1;
     limit = limit > 0 ? limit : 10;
@@ -114,9 +122,11 @@ export class BasicGradeService {
     const skip = (page - 1) * limit;
 
     const query = this.basicGradeRepository.createQueryBuilder('basicgrade')
-    .leftJoinAndSelect('basicgrade.user', 'user')
-    .leftJoinAndSelect('basicgrade.student', 'student')
-    .leftJoinAndSelect('basicgrade.subject', 'subject')
+      .leftJoinAndSelect('basicgrade.user', 'user')
+      .leftJoinAndSelect('basicgrade.student', 'student')
+      .leftJoinAndSelect('basicgrade.subject', 'subject')
+      .leftJoinAndSelect('basicgrade.items', 'items')
+      .leftJoinAndSelect('items.criterion', 'criterion')
 
     if (search) {
       query.where(
@@ -142,94 +152,92 @@ export class BasicGradeService {
     };
   }
   async findAllPagSearchRange(
-  page: number,
-  limit: number,
-  search?: string,
-  class_name?: string,
-  startDate?: string,
-  endDate?: string
-) {
-  // 1. pagination
-  page = page > 0 ? page : 1;
-  limit = limit > 0 ? limit : 10;
+    page: number,
+    limit: number,
+    search?: string,
+    class_name?: string,
+    startDate?: string,
+    endDate?: string
+  ) {
+    // 1. pagination
+    page = page > 0 ? page : 1;
+    limit = limit > 0 ? limit : 10;
 
-  const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-  // 2. query builder
-  const query = this.basicGradeRepository
-    .createQueryBuilder('basicgrade')
-    .leftJoinAndSelect('basicgrade.user', 'user')
-    .leftJoinAndSelect('basicgrade.student', 'student')
-    .leftJoinAndSelect('student.classs', 'classs')
-    .leftJoinAndSelect('basicgrade.subject', 'subject');
+    // 2. query builder
+    const query = this.basicGradeRepository
+      .createQueryBuilder('basicgrade')
+      .leftJoinAndSelect('basicgrade.user', 'user')
+      .leftJoinAndSelect('basicgrade.student', 'student')
+      .leftJoinAndSelect('student.classs', 'classs')
+      .leftJoinAndSelect('basicgrade.subject', 'subject')
+      .leftJoinAndSelect('basicgrade.items', 'items')
+      .leftJoinAndSelect('items.criterion', 'criterion')
 
-  // 3. SEARCH (faqat student)
-  if (search) {
-    query.andWhere(
-      `(student.first_name LIKE :search 
+    // 3. SEARCH (faqat student)
+    if (search) {
+      query.andWhere(
+        `(student.first_name LIKE :search 
         OR student.last_name LIKE :search)`,
-      { search: `%${search}%` }
-    );
+        { search: `%${search}%` }
+      );
+    }
+
+    // 4. CLASS FILTER (ALOXIDA)
+    if (class_name) {
+      query.andWhere(
+        `classs.name LIKE :class_name`,
+        { class_name: `%${class_name}%` }
+      );
+    }
+
+    // 5. DATE RANGE
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+
+      query.andWhere(
+        `basicgrade.date BETWEEN :start AND :end`,
+        { start, end }
+      );
+    }
+
+    // 6. execute
+    const [data, total] = await query
+      .orderBy('basicgrade.id', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    // 7. response
+    return {
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      data,
+    };
   }
 
-  // 4. CLASS FILTER (ALOXIDA)
-  if (class_name) {
-    query.andWhere(
-      `classs.name LIKE :class_name`,
-      { class_name: `%${class_name}%` }
-    );
-  }
 
-  // 5. DATE RANGE
-  if (startDate && endDate) {
+
+  async findAllWithRange(startDate: string, endDate: string) {
     const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
-
-    query.andWhere(
-      `basicgrade.date BETWEEN :start AND :end`,
-      { start, end }
-    );
-  }
-
-  // 6. execute
-  const [data, total] = await query
-    .orderBy('basicgrade.id', 'DESC')
-    .skip(skip)
-    .take(limit)
-    .getManyAndCount();
-
-  // 7. response
-  return {
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-    data,
-  };
-}
-
-  async findAll() {
-    return this.basicGradeRepository.find({
-      relations:["user","student","subject","items"]
-    })
-  }
-
-  async findAllWithRange(startDate:string,endDate:string){
-    const start= new Date(startDate);
     const end = new Date(endDate);
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
 
     const result = await this.basicGradeRepository.find({
-      where:{
-        date:Between(start, end)
+      where: {
+        date: Between(start, end)
       },
-      relations:["user","student","subject"]
+      relations: ["user", "student", "subject","items" ,"items.criterion"]
     })
 
     return result;
