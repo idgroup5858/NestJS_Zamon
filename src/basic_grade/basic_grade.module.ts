@@ -16,5 +16,6 @@ import { BasicGradeItem } from './entities/basic_grade_item.entity';
   ],
   controllers: [BasicGradeController],
   providers: [BasicGradeService],
+  exports:[BasicGradeService]
 })
 export class BasicGradeModule {}

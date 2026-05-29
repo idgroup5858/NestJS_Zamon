@@ -1,6 +1,8 @@
-import { Update, Start, Help, On, Ctx } from 'nestjs-telegraf';
+import { Update, Start, Help, On, Ctx, Hears } from 'nestjs-telegraf';
+import { BasicGradeService } from 'src/basic_grade/basic_grade.service';
 import { ClassService } from 'src/class/class.service';
 import { StudentService } from 'src/student/student.service';
+import { SubjectService } from 'src/subject/subject.service';
 import { Context, Markup } from 'telegraf';
 
 @Update()
@@ -8,9 +10,11 @@ export class TelegramUpdate {
 
 
     constructor(
-
         private readonly classService: ClassService,
-        private readonly studentService: StudentService
+        private readonly studentService: StudentService,
+        private readonly subjectService: SubjectService,
+        private readonly basicGradeService: BasicGradeService
+
     ) { }
 
     @Start()
@@ -18,7 +22,99 @@ export class TelegramUpdate {
         await ctx.reply(
             `Salom! Kerakli bo'limni tanlang:`,
             Markup.keyboard([
-                ['👤 Profil'],
+                ['👤 Profil', "📊 Baholar"],
+                [
+                    Markup.button.contactRequest("📱 Royhatdan o'tish")
+                ]
+            ]).resize()
+        );
+    }
+
+    @Hears('📊 Baholar')
+    async subjects(@Ctx() ctx: Context) {
+        const subjects = await this.subjectService.findAll();
+
+        const buttons = subjects.map(subject => [subject.name]);
+
+        buttons.push(['⬅️ Orqaga']);
+
+        await ctx.reply(
+            'Fanni tanlang:',
+            Markup.keyboard(buttons).resize()
+        );
+    }
+
+    @Hears(/.+/)
+    async onSubjectSelect(@Ctx() ctx: Context) {
+        const msg = ctx.message as any;
+        const subjectName = msg?.text;
+
+        if (!subjectName) return;
+
+        if (subjectName === '⬅️ Orqaga') {
+            ctx.reply(
+                'Menu',
+                Markup.keyboard([['📊 Baholar']]).resize()
+            );
+            return;
+        }
+
+        const chatId = ctx.from?.id;
+        if (!chatId) return;
+
+        const data = await this.basicGradeService.findLastWeekBySubject(
+            String(chatId),
+            subjectName,
+        );
+
+        if (!data.length) {
+            ctx.reply('Bu fan bo‘yicha ma’lumot topilmadi.');
+            return;
+        }
+
+        const student = data[0].student;
+
+        let text = `📊 ${subjectName} - Haftalik hisobot\n\n`;
+        text += `👤 O‘quvchi: ${student.first_name} ${student.last_name}\n\n`;
+
+        let total = 0;
+
+        data.forEach((item, i) => {
+            total += item.grade;
+
+            text += `📅 ${i + 1}. ${new Date(item.date).toLocaleDateString()}\n`;
+            text += `📘 Mavzu: ${item.theme}\n`;
+            text += `⭐ Umumiy baho: ${item.grade}\n`;
+
+            if (item.items?.length) {
+                text += `📌 Kriteriyalar:\n`;
+
+                item.items.forEach((it: any) => {
+                    text += `   🧠 ${it.criterion?.name || '-'}: ${it.grade}\n`;
+
+                    if (it.comment) {
+                        text += `      📝 ${it.comment}\n`;
+                    }
+                });
+            }
+
+            text += `📝 Umumiy izoh: ${item.comment || '-'}\n\n`;
+        });
+
+        const avg = total / data.length;
+
+        text += `📊 O‘rtacha baho: ${avg.toFixed(1)}\n`;
+
+        ctx.reply(text);
+    }
+
+
+    @Hears('⬅️ Orqaga')
+    async back(@Ctx() ctx: Context) {
+        await ctx.reply(
+            "Asosiy menyu",
+            Markup.keyboard([
+                ['👤 Profil', "📊 Baholar"],
                 [
                     Markup.button.contactRequest("📱 Royhatdan o'tish")
                 ]
@@ -70,10 +166,7 @@ export class TelegramUpdate {
             await ctx.reply(response);
         }
 
-        // 5. BAHOLAR
-        else if (text === '📊 Baholar') {
-            await ctx.reply('📊 Joriy chorakdagi baholaringiz...');
-        }
+
 
         // 6. YORDAM
         else if (text === 'ℹ️ Yordam') {

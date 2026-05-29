@@ -243,6 +243,81 @@ export class BasicGradeService {
     return result;
   }
 
+  async findLastWeek(search?: string) {
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    const start = new Date();
+    start.setDate(start.getDate() - 7);
+    start.setHours(0, 0, 0, 0);
+
+    const query = this.basicGradeRepository
+      .createQueryBuilder('grade')
+      .leftJoinAndSelect('grade.user', 'user')
+      .leftJoinAndSelect('grade.student', 'student')
+      .leftJoinAndSelect('grade.subject', 'subject')
+      .leftJoinAndSelect('grade.items', 'items')
+      .leftJoinAndSelect('items.criterion', 'criterion')
+      .where('grade.date BETWEEN :start AND :end', {
+        start,
+        end,
+      });
+
+    if (search) {
+      query.andWhere(
+        '(student.parent_phone = :search OR student.telegram_chat_id = :search)',
+        { search },
+      );
+    }
+
+    return await query.getMany();
+  }
+
+  async findLastWeekBySubject(chatId: string, subjectName: string) {
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  const start = new Date();
+  start.setDate(start.getDate() - 7);
+  start.setHours(0, 0, 0, 0);
+
+  const query = this.basicGradeRepository
+    .createQueryBuilder('grade')
+    .leftJoinAndSelect('grade.student', 'student')
+    .leftJoinAndSelect('grade.subject', 'subject')
+    .leftJoinAndSelect('grade.items', 'items')
+    .leftJoinAndSelect('items.criterion', 'criterion')
+    .where('grade.date BETWEEN :start AND :end', { start, end })
+    .andWhere('subject.name = :subjectName', { subjectName })
+    .andWhere('student.telegram_chat_id = :chatId', { chatId });
+
+  return await query.getMany();
+}
+
+  async findLastWeekOld() {
+  const end = new Date(); // hozirgi vaqt
+  end.setHours(23, 59, 59, 999);
+
+  const start = new Date();
+  start.setDate(start.getDate() - 7);
+  start.setHours(0, 0, 0, 0);
+
+  const result = await this.basicGradeRepository.find({
+    where: {
+      date: Between(start, end),
+    },
+    relations: [
+      'user',
+      'student',
+      'subject',
+      'items',
+      'items.criterion',
+    ],
+  });
+
+    return result;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} basicGrade`;
   }

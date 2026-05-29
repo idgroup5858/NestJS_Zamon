@@ -25,20 +25,20 @@ export class BasicGradeController {
   @Get("getfullrange")
   findAllPagSearchRange(
     @Query('page') page: number,
-  @Query('limit') limit: number,
-  @Query('search') search?: string,
-  @Query('class_name') class_name?: string,
-  @Query('start') startDate?: string,
-  @Query('end') endDate?: string,
-) {
-  return this.basicGradeService.findAllPagSearchRange(
-    Number(page),
-    Number(limit),
-    search,
-    class_name,
-    startDate,
-    endDate
-  );
+    @Query('limit') limit: number,
+    @Query('search') search?: string,
+    @Query('class_name') class_name?: string,
+    @Query('start') startDate?: string,
+    @Query('end') endDate?: string,
+  ) {
+    return this.basicGradeService.findAllPagSearchRange(
+      Number(page),
+      Number(limit),
+      search,
+      class_name,
+      startDate,
+      endDate
+    );
   }
 
   @Get("getfull")
@@ -50,13 +50,28 @@ export class BasicGradeController {
     return this.basicGradeService.findAllPagSearch(+page, +limit, search);
   }
 
+  @Get("getlastweek")
+  findLastWeek(
+    @Query("search") search: string,
+  ) {
+    return this.basicGradeService.findLastWeek(search);
+  }
+
+  @Get("getlastweeksubject")
+  findLastWeekBySubject(
+    @Query("chatid") chatId: string,
+    @Query("subject") subject: string,
+  ) {
+    return this.basicGradeService.findLastWeekBySubject(chatId, subject);
+  }
+
 
   @Get("allrange")
-    findAllWithRange(
-     @Query("start") startDate:string,
-     @Query("end") endDate:string
-    ) {
-      return this.basicGradeService.findAllWithRange(startDate,endDate);
+  findAllWithRange(
+    @Query("start") startDate: string,
+    @Query("end") endDate: string
+  ) {
+    return this.basicGradeService.findAllWithRange(startDate, endDate);
   }
 
   @Get(':id')
