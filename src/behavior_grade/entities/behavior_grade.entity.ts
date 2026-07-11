@@ -13,7 +13,7 @@ export class BehaviorGrade {
     @ManyToOne(() => User, user => user.behaviorGrades)
     user: User;
 
-    @ManyToOne(() => Student, student => student.behaviorGrades)
+    @ManyToOne(() => Student, student => student.behaviorGrades,{onDelete:"CASCADE"})
     student: Student;
 
     @ManyToOne(() => Subject, subject => subject.behaviorGrades)

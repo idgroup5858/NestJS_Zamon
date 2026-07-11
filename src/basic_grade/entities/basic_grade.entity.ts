@@ -14,7 +14,7 @@ export class BasicGrade {
     @ManyToOne(() => User, user => user.basicGrades)
     user: User;
 
-    @ManyToOne(() => Student, student => student.basicGrades)
+    @ManyToOne(() => Student, student => student.basicGrades,{onDelete:"CASCADE"})
     student: Student;
 
     @ManyToOne(() => Subject, subject => subject.basicGrades)

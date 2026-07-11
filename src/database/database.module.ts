@@ -5,14 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     imports:[
         TypeOrmModule.forRoot({
-            type:"mysql",
-            host:"localhost",
-            port:3306,
-            username:"root",
-            password:"",
-            database:"zamon",
-            autoLoadEntities:true,
-            synchronize:true
+           type: "mysql",
+                host: "localhost",
+                port: 3306,
+                username: "zamonmak_a",
+                password: "Dim@5858",
+                database: "zamonmak_a",
+                autoLoadEntities: true,
+                synchronize: true
         })
     ]
 })
