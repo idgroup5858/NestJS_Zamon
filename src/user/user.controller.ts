@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -80,6 +80,27 @@ export class UserController {
     @Param('subjectId') subjectId: string
   ) {
     return this.userService.removeSubject(+userId,+subjectId);
+  }
+
+
+   // 1. SINF QO'SHISH (POST) -> /users/1/2/5
+  @Post('addsubjectuser/:userId/:subjectId/:classId')
+  async addClassToUserSubject(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('subjectId', ParseIntPipe) subjectId: number,
+    @Param('classId', ParseIntPipe) classId: number,
+  ) {
+    return this.userService.addClassToUserSubject(userId, subjectId, classId);
+  }
+
+  // 2. SINF O'CHIRISH (DELETE) -> /users/1/2/5
+  @Delete('removesubjectuser/:userId/:subjectId/:classId')
+  async deleteClassOrSubject(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('subjectId', ParseIntPipe) subjectId: number,
+    @Param('classId', ParseIntPipe) classId: number,
+  ) {
+    return this.userService.deleteClassOrSubject(userId, subjectId, classId);
   }
 
 

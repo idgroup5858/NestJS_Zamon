@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { SubjectService } from 'src/subject/subject.service';
+import { UserSubject } from './entities/usersubject.entity';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,11 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+
+    @InjectRepository(UserSubject)
+    private userSubjectRepository: Repository<UserSubject>,
+
     private readonly jwtService: JwtService,
     private readonly subjectService: SubjectService
   ) { }
@@ -91,7 +97,7 @@ export class UserService {
 
   async findAll() {
     return this.userRepository.find({
-      relations:["subjects","classs"]
+      relations: ["subjects", "classs"]
     });
   }
 
@@ -103,8 +109,8 @@ export class UserService {
     const skip = (page - 1) * limit;
 
     const query = this.userRepository.createQueryBuilder('user')
-    .leftJoinAndSelect('user.subjects', 'subjects')
-    .leftJoinAndSelect('user.classs', 'classs')
+      .leftJoinAndSelect('user.subjects', 'subjects')
+      .leftJoinAndSelect('user.classs', 'classs')
     // .leftJoinAndSelect('sale.items', 'items')
     // .leftJoinAndSelect('sale.payments', 'payments')
     // .leftJoinAndSelect('sale.user', 'user')
@@ -142,7 +148,14 @@ export class UserService {
     const checkUser = await this.userRepository.findOne(
       {
         where: { id: id },
-        relations:["subjects","classs"]   
+        relations: [
+
+          'userSubjects',          // 1. Ustozning hamma fan birikmalarini oladi
+          'userSubjects.subject',  // 2. Shu birikmaga tegishli fanning nomini oladi
+          'userSubjects.classes',  // 3. Shu fanning ichidagi barcha sinflarni oladi
+          'classs',                 // 4. Ustoz sinf rahbari bo'lgan sinflar ro'yxati (eski bog'lanish)
+          'subjects',
+        ],
       });
     if (!checkUser) throw new NotFoundException("User not found");
 
@@ -262,13 +275,13 @@ export class UserService {
     const subject = await this.subjectService.findOne(subjectId)
 
     const exists = user.subjects.some(s => s.id === subjectId);
-    
+
 
     if (!exists) {
       user.subjects.push(subject);
       await this.userRepository.save(user);
-    }else{
-      
+    } else {
+
     }
 
     return user;
@@ -291,6 +304,58 @@ export class UserService {
 
     return this.userRepository.save(user);
   }
+
+
+  // 1. USTOZNING FANIGA YANGI SINF QO'SHISH (ADD)
+  async addClassToUserSubject(userId: number, subjectId: number, classId: number) {
+
+    // Ustoz shu fanga oldin biriktirilganmi yoki yo'qmi qidiramiz
+    let userSubject = await this.userSubjectRepository.findOne({
+      where: { user: { id: userId }, subject: { id: subjectId } },
+      relations: ['classes'],
+    });
+
+    // Agar ustozda bu fan hali bo'lmasa, yangi bog'liqlik ochamiz
+    if (!userSubject) {
+      userSubject = this.userSubjectRepository.create({
+        user: { id: userId },
+        subject: { id: subjectId },
+        classes: [],
+      });
+    }
+
+    // TypeORM-da bazadan sinfni qidirib o'tirmasdan, shunchaki ID orqali object berib yuborish kifoya
+    userSubject.classes.push({ id: classId } as any);
+
+    // Bazaga saqlaymiz
+    await this.userSubjectRepository.save(userSubject);
+
+    return { message: 'Sinf muvaffaqiyatli biriktirildi' };
+  }
+
+
+  async deleteClassOrSubject(userId: number, subjectId: number, classId: number) {
+    const userSubject = await this.userSubjectRepository.findOne({
+      where: { user: { id: userId }, subject: { id: subjectId } },
+      relations: ['classes'],
+    });
+
+    if (!userSubject) return { message: "Birikma topilmadi" };
+
+    // 1. Sinfni massivdan olib tashlaymiz
+    userSubject.classes = userSubject.classes.filter((c) => c.id !== classId);
+
+    // 2. Agar fanda boshqa sinf qolmagan bo'lsa, BIRTALIKNI (birikmani) o'chiramiz
+    if (userSubject.classes.length === 0) {
+      await this.userSubjectRepository.delete(userSubject.id); // 👈 To'g'ridan-to'g'ri birikma ID'si orqali o'chirish
+      return { message: "Sinf qolmagani uchun fan birikmasi butunlay o'chirildi" };
+    }
+
+    // 3. Agar boshqa sinflar bo'lsa, shunchaki yangilangan massivni saqlaymiz
+    await this.userSubjectRepository.save(userSubject);
+    return { message: "Sinf muvaffaqiyatli o'chirildi" };
+  }
+
 
 
 

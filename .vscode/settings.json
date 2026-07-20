@@ -5,7 +5,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".env": false,
+        ".env": true,
         "src/main.ts": false,
         "src/app.controller.spec.ts": true,
         "tsconfig.json": true,
@@ -26,7 +26,9 @@
         "src/criteria/criteria.service.spec.ts": true,
         "src/criteria/criteria.controller.spec.ts": true,
         "src/basic_grade/basic_grade.controller.spec.ts": true,
-        "src/basic_grade/basic_grade.service.spec.ts": true
+        "src/basic_grade/basic_grade.service.spec.ts": true,
+        "src/user/user.controller.spec.ts": true,
+        "src/user/user.service.spec.ts": true
     },
     "hide-files.files": [
         "src/app.controller.spec.ts",
@@ -48,6 +50,8 @@
         "src/criteria/criteria.service.spec.ts",
         "src/criteria/criteria.controller.spec.ts",
         "src/basic_grade/basic_grade.controller.spec.ts",
-        "src/basic_grade/basic_grade.service.spec.ts"
+        "src/basic_grade/basic_grade.service.spec.ts",
+        "src/user/user.controller.spec.ts",
+        "src/user/user.service.spec.ts"
     ]
 }

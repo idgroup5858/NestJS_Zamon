@@ -7,9 +7,10 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './entities/jwt.strategy';
 import { SubjectModule } from 'src/subject/subject.module';
+import { UserSubject } from './entities/usersubject.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]),
+  imports: [TypeOrmModule.forFeature([User,UserSubject]),
   JwtModule.registerAsync({
     inject: [ConfigService],
     useFactory: (config: ConfigService) => ({

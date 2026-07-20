@@ -3,6 +3,7 @@ import { BehaviorGrade } from "src/behavior_grade/entities/behavior_grade.entity
 import { Class } from "src/class/entities/class.entity";
 import { Subject } from "src/subject/entities/subject.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserSubject } from "./usersubject.entity";
 
 
 
@@ -37,21 +38,26 @@ export class User {
 
      @ManyToMany(() => Subject, subject => subject.users)
      @JoinTable()
-     subjects:Subject[];
+     subjects: Subject[];
 
 
 
-     @OneToMany(()=> Class, classs => classs.users)
-     classs:Class[]
+     @OneToMany(() => Class, classs => classs.users)
+     classs: Class[]
 
 
-     @OneToMany(()=> BasicGrade, basicGrade => basicGrade.user)
-     basicGrades:BasicGrade[]
+     @OneToMany(() => BasicGrade, basicGrade => basicGrade.user)
+     basicGrades: BasicGrade[]
 
 
      @OneToMany(() => BehaviorGrade, (bg) => bg.user)
      behaviorGrades: BehaviorGrade[];
 
+
+
+     // User entity ichiga qo'shiladi:
+     @OneToMany(() => UserSubject, (us) => us.user)
+     userSubjects: UserSubject[];
 
 
 
