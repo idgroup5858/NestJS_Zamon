@@ -25,7 +25,16 @@ export class Student {
     parent_phone: string;
 
     @Column({ nullable: true })
+    parent_phone2: string;
+
+    @Column({ nullable: true })
+    telegram_phone: string;
+
+    @Column({ nullable: true })
     telegram_chat_id: string;
+
+    @Column({ default: true })
+    active: boolean;
 
     @CreateDateColumn()
     date: Date;

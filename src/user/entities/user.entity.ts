@@ -34,6 +34,10 @@ export class User {
      @CreateDateColumn()
      date: Date;
 
+
+     @Column({default:true})
+     active:boolean;
+
      //Relations
 
      @ManyToMany(() => Subject, subject => subject.users)

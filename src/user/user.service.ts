@@ -11,6 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { SubjectService } from 'src/subject/subject.service';
 import { UserSubject } from './entities/usersubject.entity';
 
+
+
+
 @Injectable()
 export class UserService {
 
@@ -52,7 +55,11 @@ export class UserService {
       email: loginDto.email,
     });
 
+
+
     if (!user) throw new NotFoundException("User not found");
+
+    if (!user.active) throw new NotFoundException("User de_activated");
 
 
     const isMatch = await bcrypt.compare(loginDto.password, user.password);
