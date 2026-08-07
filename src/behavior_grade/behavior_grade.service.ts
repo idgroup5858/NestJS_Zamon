@@ -8,8 +8,8 @@ import { StudentService } from 'src/student/student.service';
 import { SubjectService } from 'src/subject/subject.service';
 import { Between, Repository } from 'typeorm';
 import { BehaviorGradeItem } from './entities/behavior_grade_items.entity';
-import { InjectBot } from 'nestjs-telegraf';
-import { Telegraf } from 'telegraf';
+import { TelegramService } from 'src/telegram/telegram.service';
+
 
 @Injectable()
 export class BehaviorGradeService {
@@ -24,9 +24,9 @@ export class BehaviorGradeService {
     private readonly userService: UserService,
     private readonly studentService: StudentService,
     private readonly subjectService: SubjectService,
+    private readonly telegramService: TelegramService,
 
-    @InjectBot()
-    private readonly bot: Telegraf
+    
   ) { }
 
 
@@ -71,7 +71,7 @@ export class BehaviorGradeService {
     await this.behaviorGradeItemRepository.save(behaviorItems);
 
     if(student.telegram_chat_id){
-    await this.sendMessage(
+    await this.telegramService.goMessage(
       student.telegram_chat_id,
       `Salom ${student.first_name} ! Sizning ${subject.name} fanidan xulq-atvor baholaringiz qo'shildi. Umumiy izoh: ${overall_comment}`
     )
@@ -237,13 +237,13 @@ export class BehaviorGradeService {
 
 
 
-  async sendMessage(chatId: string, text: string) {
+  // async sendMessage(chatId: string, text: string) {
 
-    await this.bot.telegram.sendMessage(
-      chatId,
-      text
-    );
-  }
+  //   await this.bot.telegram.sendMessage(
+  //     chatId,
+  //     text
+  //   );
+  // }
 
 
   async askGemini(

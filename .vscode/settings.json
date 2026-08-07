@@ -6,8 +6,7 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         ".env": false,
-        "src/main.ts": false,
-        "src/app.controller.spec.ts": true,
+        "src/main.ts": true,
         "tsconfig.json": true,
         "tsconfig.build.json": true,
         "package.json": true,
@@ -28,10 +27,12 @@
         "src/basic_grade/basic_grade.controller.spec.ts": true,
         "src/basic_grade/basic_grade.service.spec.ts": true,
         "src/user/user.controller.spec.ts": true,
-        "src/user/user.service.spec.ts": true
+        "src/user/user.service.spec.ts": true,
+        "src/app.controller.spec.ts": true,
+        "src/telegram/telegram.service.spec.ts": true,
+        "src/telegram/telegram.controller.spec.ts": true
     },
     "hide-files.files": [
-        "src/app.controller.spec.ts",
         "tsconfig.json",
         "tsconfig.build.json",
         "package.json",
@@ -52,6 +53,9 @@
         "src/basic_grade/basic_grade.controller.spec.ts",
         "src/basic_grade/basic_grade.service.spec.ts",
         "src/user/user.controller.spec.ts",
-        "src/user/user.service.spec.ts"
+        "src/user/user.service.spec.ts",
+        "src/app.controller.spec.ts",
+        "src/telegram/telegram.service.spec.ts",
+        "src/telegram/telegram.controller.spec.ts"
     ]
 }

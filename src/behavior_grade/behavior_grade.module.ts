@@ -7,12 +7,15 @@ import { BehaviorGradeItem } from './entities/behavior_grade_items.entity';
 import { UserModule } from 'src/user/user.module';
 import { StudentModule } from 'src/student/student.module';
 import { SubjectModule } from 'src/subject/subject.module';
+import { TelegramModule } from 'src/telegram/telegram.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BehaviorGrade, BehaviorGradeItem]),
     UserModule,
     StudentModule,
-    SubjectModule],
+    SubjectModule,
+    TelegramModule
+  ],
   controllers: [BehaviorGradeController],
   providers: [BehaviorGradeService],
 })

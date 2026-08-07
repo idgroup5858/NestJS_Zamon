@@ -8,6 +8,11 @@
                 npm install @nestjs/config
 
 
+                npm install node-telegram-bot-api
+                npm install -D @types/node-telegram-bot-api
+
+                npm install @nestjs/config
+
                 for payload token
 
                 npm install @nestjs/passport passport passport-jwt @nestjs/jwt

@@ -122,7 +122,7 @@ export class StudentService {
   async findByPhone(phone: string) {
     return await this.studentRepository.findOne({
         where: {
-            parent_phone: phone
+            telegram_phone: phone
         }
     });
 }

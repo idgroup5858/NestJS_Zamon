@@ -10,7 +10,6 @@ import { StudentModule } from './student/student.module';
 import { BasicGradeModule } from './basic_grade/basic_grade.module';
 import { BehaviorGradeModule } from './behavior_grade/behavior_grade.module';
 import { TelegramModule } from './telegram/telegram.module';
-import { TelegrafModule } from 'nestjs-telegraf';
 import { CriteriaModule } from './criteria/criteria.module';
 
 @Module({
@@ -25,9 +24,7 @@ import { CriteriaModule } from './criteria/criteria.module';
     BasicGradeModule,
     BehaviorGradeModule,
     
-    TelegrafModule.forRoot({
-      token: process.env.BOT_TOKEN!,
-    }),
+    
     TelegramModule,
     CriteriaModule
   ],
