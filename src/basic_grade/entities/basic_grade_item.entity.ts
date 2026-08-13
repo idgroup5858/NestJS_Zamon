@@ -21,7 +21,7 @@ export class BasicGradeItem {
   criterion: Criterion;
 
   @Column()
-  grade: number; // 1-5 yoki 0-100
+  grade: number; 
 
   @Column({ nullable: true })
   comment: string;

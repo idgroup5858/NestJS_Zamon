@@ -32,6 +32,7 @@ export class SubjectService {
     const query = this.subjectRepository.createQueryBuilder('subject')
     .leftJoinAndSelect('subject.users', 'users')
     .leftJoinAndSelect('subject.criteria', 'criteria')
+    .leftJoinAndSelect('criteria.classs', 'classs')
 
     if (search) {
       query.where(
@@ -59,7 +60,7 @@ export class SubjectService {
 
   findAll() {
     return this.subjectRepository.find({
-      relations:["users","criteria"]
+      relations:["criteria","criteria.classs"]
     });
   }
 
@@ -67,7 +68,7 @@ export class SubjectService {
     const checkSubject = await this.subjectRepository.findOne(
       {
         where: { id: id },
-        //relations:["sale","purchase","returns"]    
+        relations:["criteria","criteria.classs"]
       });
     if (!checkSubject) throw new NotFoundException("Not found");
     return checkSubject;

@@ -22,7 +22,8 @@ export class CriteriaService {
    
     const criteria =  this.criterionRepository.create({
       ...createCriterionDto,
-      subject:{id:createCriterionDto.subject_id}
+      subject:{id:createCriterionDto.subject_id},
+      classs:{id:createCriterionDto.class_id}
     })
 
     return this.criterionRepository.save(criteria);
@@ -31,7 +32,7 @@ export class CriteriaService {
   async findAll() {
 
     return this.criterionRepository.find({
-      relations:["subject"]
+      relations:["subject","classs"]
     });
   }
 
