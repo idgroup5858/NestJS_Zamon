@@ -17,7 +17,7 @@ export class BasicGradeItem {
   })
   basicGrade: BasicGrade;
 
-  @ManyToOne(() => Criterion)
+  @ManyToOne(() => Criterion,{onDelete:"SET NULL"})
   criterion: Criterion;
 
   @Column()

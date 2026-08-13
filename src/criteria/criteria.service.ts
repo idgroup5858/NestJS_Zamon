@@ -40,7 +40,7 @@ export class CriteriaService {
       const checkCriteria = await this.criterionRepository.findOne(
         {
           where: { id: id },
-          //relations:["sale","purchase","returns"]    
+          relations:["subject","classs"]  
         });
       if (!checkCriteria) throw new NotFoundException("Not found");
       return checkCriteria;
