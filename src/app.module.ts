@@ -17,6 +17,8 @@ import { TuitionModule } from './tuition/tuition.module';
 import { TuitionPaymentModule } from './tuition_payment/tuition_payment.module';
 import { ExpenseModule } from './expense/expense.module';
 import { EmployeeModule } from './employee/employee.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TuitionReminderModule } from './tuition_reminder/tuition_reminder.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -38,7 +40,9 @@ import { EmployeeModule } from './employee/employee.module';
     TuitionModule,
     TuitionPaymentModule,
     ExpenseModule,
-    EmployeeModule
+    EmployeeModule,
+    ScheduleModule.forRoot(),
+    TuitionReminderModule
   ],
   controllers: [AppController],
   providers: [AppService],
