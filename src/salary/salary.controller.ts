@@ -28,6 +28,11 @@ export class SalaryController {
     return this.salaryService.findByUserId(+userId);
   }
 
+  @Get('getby/employee/:employeeId')
+  findByEmployeeId(@Param('employeeId') employeeId: string) {
+    return this.salaryService.findByEmployeeId(+employeeId);
+  }
+
 
     // GET http://localhost:3000/salary?page=1&limit=10&search=Ali
   @Get("getfull")

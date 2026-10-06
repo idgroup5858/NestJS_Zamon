@@ -16,6 +16,7 @@ import { SalaryPaymentModule } from './salary_payment/salary_payment.module';
 import { TuitionModule } from './tuition/tuition.module';
 import { TuitionPaymentModule } from './tuition_payment/tuition_payment.module';
 import { ExpenseModule } from './expense/expense.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -36,7 +37,8 @@ import { ExpenseModule } from './expense/expense.module';
     SalaryPaymentModule,
     TuitionModule,
     TuitionPaymentModule,
-    ExpenseModule
+    ExpenseModule,
+    EmployeeModule
   ],
   controllers: [AppController],
   providers: [AppService],

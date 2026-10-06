@@ -1,3 +1,4 @@
+import { Employee } from "src/employee/entities/employee.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -33,7 +34,12 @@ export class SalaryPayment {
     @Column("text", { nullable: true })
     comment: string;
 
+    // To'lov yo user'ga, yo employee'ga tegishli bo'ladi
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     user: User;
+
+    @ManyToOne(() => Employee, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "employee_id" })
+    employee: Employee;
 }

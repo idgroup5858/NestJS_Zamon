@@ -1,3 +1,4 @@
+import { Employee } from "src/employee/entities/employee.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -19,10 +20,16 @@ export class Salary {
     @UpdateDateColumn()
     updatedAt: Date;
 
+    // Maosh yo user'ga (akkaunti bor xodim), yo employee'ga (qorovul, oshpaz...) tegishli bo'ladi
     @OneToOne(()=>User,{onDelete:"CASCADE"})
     @JoinColumn({name:"user_id"})
     @Index({ unique: true })
     user:User
+
+    @OneToOne(()=>Employee,{onDelete:"CASCADE"})
+    @JoinColumn({name:"employee_id"})
+    @Index({ unique: true })
+    employee:Employee
 }
 
 

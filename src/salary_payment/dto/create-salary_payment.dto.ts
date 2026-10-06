@@ -3,8 +3,14 @@ import { PaymentType } from "../entities/salary_payment.entity";
 
 export class CreateSalaryPaymentDto {
 
+    // user_id yoki employee_id - faqat bittasi yuboriladi
+    @IsOptional()
     @IsNumber()
-    user_id: number;
+    user_id?: number;
+
+    @IsOptional()
+    @IsNumber()
+    employee_id?: number;
 
     @IsNumber()
     base_salary_norm: number;

@@ -27,6 +27,11 @@ export class SalaryPaymentController {
     return this.salaryPaymentService.findByUserId(+userId);
   }
 
+  @Get('getby/employee/:employeeId')
+  findByEmployeeId(@Param('employeeId') employeeId: string) {
+    return this.salaryPaymentService.findByEmployeeId(+employeeId);
+  }
+
   // GET http://localhost:3000/salarypayment/status?month=9&year=2026&status=partial
   @Get('status')
   getUsersSalaryStatus(
@@ -35,6 +40,16 @@ export class SalaryPaymentController {
     @Query('status') status?: 'not_paid' | 'partial' | 'fully_paid',
   ) {
     return this.salaryPaymentService.getUsersSalaryStatus(+month, +year, status);
+  }
+
+  // GET http://localhost:3000/salarypayment/status/employee?month=9&year=2026&status=partial
+  @Get('status/employee')
+  getEmployeesSalaryStatus(
+    @Query('month') month: string,
+    @Query('year') year: string,
+    @Query('status') status?: 'not_paid' | 'partial' | 'fully_paid',
+  ) {
+    return this.salaryPaymentService.getEmployeesSalaryStatus(+month, +year, status);
   }
 
   // GET http://localhost:3000/salarypayment/dashboard?month=9&year=2026
@@ -54,6 +69,16 @@ export class SalaryPaymentController {
     @Query('year') year: string,
   ) {
     return this.salaryPaymentService.findByUserAndPeriod(+userId, +month, +year);
+  }
+
+  // GET http://localhost:3000/salarypayment/getby/employee/1/period?month=9&year=2026
+  @Get('getby/employee/:employeeId/period')
+  findByEmployeeAndPeriod(
+    @Param('employeeId') employeeId: string,
+    @Query('month') month: string,
+    @Query('year') year: string,
+  ) {
+    return this.salaryPaymentService.findByEmployeeAndPeriod(+employeeId, +month, +year);
   }
 
   // GET http://localhost:3000/salarypayment/getfull?page=1&limit=10&search=Ali
