@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
-import { PaymentType } from "../entities/salary_payment.entity";
+import { PaymentMethod, PaymentType } from "../entities/salary_payment.entity";
 
 export class CreateSalaryPaymentDto {
 
@@ -20,6 +20,11 @@ export class CreateSalaryPaymentDto {
 
     @IsEnum(PaymentType)
     payment_type: PaymentType;
+
+    // Yuborilmasa bazada "cash" bo'ladi
+    @IsOptional()
+    @IsEnum(PaymentMethod)
+    payment_method?: PaymentMethod;
 
     @IsInt()
     @Min(1)

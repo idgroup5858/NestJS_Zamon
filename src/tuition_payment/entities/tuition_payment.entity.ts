@@ -1,5 +1,6 @@
+import { PaymentMethod } from "src/salary_payment/entities/salary_payment.entity";
 import { Student } from "src/student/entities/student.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class TuitionPayment {
@@ -21,11 +22,20 @@ export class TuitionPayment {
     @Column("smallint")
     period_year: number;
 
+    @Column({ type: "enum", enum: PaymentMethod, default: PaymentMethod.CASH })
+    payment_method: PaymentMethod;
+
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     paid_at: Date;
 
     @Column("text", { nullable: true })
     comment: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @ManyToOne(() => Student, { onDelete: "CASCADE" })
     @JoinColumn({ name: "student_id" })

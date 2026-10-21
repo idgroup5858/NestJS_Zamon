@@ -1,4 +1,5 @@
-import { IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import { PaymentMethod } from "src/salary_payment/entities/salary_payment.entity";
 
 export class CreateTuitionPaymentDto {
 
@@ -15,6 +16,11 @@ export class CreateTuitionPaymentDto {
 
     @IsInt()
     period_year: number;
+
+    // Yuborilmasa bazada "cash" bo'ladi
+    @IsOptional()
+    @IsEnum(PaymentMethod)
+    payment_method?: PaymentMethod;
 
     @IsOptional()
     @IsString()

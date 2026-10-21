@@ -1,6 +1,6 @@
 import { Class } from "src/class/entities/class.entity";
 import { Student } from "src/student/entities/student.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum DiscountType {
     NONE = "none",
@@ -22,6 +22,9 @@ export class Tuition {
 
     @Column("decimal", { precision: 15, scale: 2, nullable: true })
     discount_value: number;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
