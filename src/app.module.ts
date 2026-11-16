@@ -19,6 +19,7 @@ import { ExpenseModule } from './expense/expense.module';
 import { EmployeeModule } from './employee/employee.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TuitionReminderModule } from './tuition_reminder/tuition_reminder.module';
+import { AiChatModule } from './ai_chat/ai_chat.module';
 
 @Module({
   imports: [UserModule, DatabaseModule,
@@ -42,7 +43,8 @@ import { TuitionReminderModule } from './tuition_reminder/tuition_reminder.modul
     ExpenseModule,
     EmployeeModule,
     ScheduleModule.forRoot(),
-    TuitionReminderModule
+    TuitionReminderModule,
+    AiChatModule
   ],
   controllers: [AppController],
   providers: [AppService],
